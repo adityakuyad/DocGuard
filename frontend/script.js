@@ -7,67 +7,107 @@ const documentation = document.getElementById("documentation");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const resultContent = document.getElementById("resultContent");
 
-// Check that all required HTML elements exist
-if (
-    !oldCode ||
-    !newCode ||
-    !documentation ||
-    !analyzeBtn ||
-    !resultContent
-) {
-    console.error("DocGuard: Required HTML elements were not found.");
-} else {
+// Display a message
+function showMessage(message, type) {
+    resultContent.textContent = message;
+    resultContent.className = type;
+}
 
-    // Handle Analyze button click
-    analyzeBtn.addEventListener("click", function () {
+// Handle Analyze button click
+analyzeBtn.addEventListener("click", async function () {
 
-        // Read and clean user inputs
-        const oldValue = oldCode.value.trim();
-        const newValue = newCode.value.trim();
-        const docValue = documentation.value.trim();
+    const oldValue = oldCode.value.trim();
+    const newValue = newCode.value.trim();
+    const docValue = documentation.value.trim();
 
-        // Check previous code
-        if (!oldValue) {
-            showMessage(
-                "Please enter your previous code.",
-                "error"
-            );
-            oldCode.focus();
-            return;
-        }
-
-        // Check updated code
-        if (!newValue) {
-            showMessage(
-                "Please enter your updated code.",
-                "error"
-            );
-            newCode.focus();
-            return;
-        }
-
-        // Check documentation
-        if (!docValue) {
-            showMessage(
-                "Please enter your project documentation.",
-                "error"
-            );
-            documentation.focus();
-            return;
-        }
-
-        // All inputs are valid
+    // Validate inputs
+    if (!oldValue || !newValue || !docValue) {
         showMessage(
-            "All inputs received successfully! Your frontend is ready for backend integration.",
-            "success"
+            "Please fill in all three input sections.",
+            "error"
         );
-
-    });
-
-    // Display messages safely
-    function showMessage(message, type) {
-        resultContent.textContent = message;
-        resultContent.className = type;
+        return;
     }
 
-}
+    // Show loading status
+    analyzeBtn.disabled = true;
+    showMessage("Analyzing documentation... Please wait.", "loading");
+
+    try {
+        // Send data to Flask backend
+        const response = await fetch(
+            "http://127.0.0.1:5000/analyze",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    old_code: oldValue,
+                    new_code: newValue,
+                    documentation: docValue
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Analysis failed.");
+        }
+
+        // Clear previous results
+        resultContent.replaceChildren();
+
+        if (data.total_issues === 0) {
+            showMessage(
+                "No documentation mismatches detected!",
+                "success"
+            );
+            return;
+        }
+
+        resultContent.className = "warning";
+
+        const heading = document.createElement("h3");
+        heading.textContent =
+            `${data.total_issues} documentation issue(s) found`;
+
+        resultContent.appendChild(heading);
+
+        // Display each detected issue
+        data.results.forEach((issue, index) => {
+            const card = document.createElement("div");
+            card.className = "issue-card";
+
+            const title = document.createElement("h3");
+            title.textContent = `${index + 1}. ${issue.type}`;
+
+            card.appendChild(title);
+
+            const fields = [
+                ["Function", issue.function],
+                ["Outdated documentation", issue.outdated_sentence],
+                ["Code change", issue.code_change],
+                ["Why this is an issue", issue.reason],
+                ["Suggested correction", issue.suggestion]
+            ];
+
+            fields.forEach(([label, value]) => {
+                const paragraph = document.createElement("p");
+                paragraph.textContent = `${label}: ${value}`;
+                card.appendChild(paragraph);
+            });
+
+            resultContent.appendChild(card);
+        });
+
+    } catch (error) {
+        showMessage(
+            "Backend connection error: " + error.message,
+            "error"
+        );
+    } finally {
+        analyzeBtn.disabled = false;
+    }
+});
