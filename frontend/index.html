@@ -9,69 +9,69 @@
     <title>DocGuard - Documentation Analyzer</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
 
-    <!-- Main heading -->
     <header>
         <h1>DocGuard</h1>
         <p>Documentation Drift Detection Tool</p>
     </header>
 
-    <!-- Main dashboard -->
     <main>
 
-        <!-- Old Code Input -->
         <section>
             <h2>1. Previous Code</h2>
             <p>Paste your original code below.</p>
 
+            <label for="oldCode">Original source code</label>
             <textarea
                 id="oldCode"
                 placeholder="Paste your old code here..."
-                rows="8">
-            </textarea>
+                rows="8"
+                spellcheck="false"></textarea>
         </section>
 
-        <!-- Updated Code Input -->
         <section>
             <h2>2. Updated Code</h2>
             <p>Paste your modified code below.</p>
 
+            <label for="newCode">Updated source code</label>
             <textarea
                 id="newCode"
                 placeholder="Paste your updated code here..."
-                rows="8">
-            </textarea>
+                rows="8"
+                spellcheck="false"></textarea>
         </section>
 
-        <!-- Documentation Input -->
         <section>
             <h2>3. Project Documentation</h2>
             <p>Paste your README documentation below.</p>
 
+            <label for="documentation">README documentation</label>
             <textarea
                 id="documentation"
                 placeholder="Paste your README content here..."
-                rows="8">
-            </textarea>
+                rows="8"></textarea>
         </section>
 
-        <!-- Analyze Button -->
         <button id="analyzeBtn" type="button">
             Analyze Documentation
         </button>
 
-        <!-- Results Section -->
-        <section id="results">
-            <h2>Analysis Results</h2>
-            <div id="resultContent">
+        <section id="results" aria-labelledby="resultsHeading">
+            <h2 id="resultsHeading">Analysis Results</h2>
+
+            <div
+                id="resultContent"
+                role="status"
+                aria-live="polite">
                 Your analysis results will appear here.
             </div>
         </section>
 
     </main>
-    <script src="script.js"></script>
+
 </body>
 </html>

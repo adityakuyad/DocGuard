@@ -1,32 +1,73 @@
 
-// Get the input elements
+// Get HTML elements
 const oldCode = document.getElementById("oldCode");
 const newCode = document.getElementById("newCode");
 const documentation = document.getElementById("documentation");
 
-// Get the button and result area
 const analyzeBtn = document.getElementById("analyzeBtn");
 const resultContent = document.getElementById("resultContent");
 
-// What happens when the button is clicked
-analyzeBtn.addEventListener("click", function () {
+// Check that all required HTML elements exist
+if (
+    !oldCode ||
+    !newCode ||
+    !documentation ||
+    !analyzeBtn ||
+    !resultContent
+) {
+    console.error("DocGuard: Required HTML elements were not found.");
+} else {
 
-    // Read the user's input
-    const oldValue = oldCode.value.trim();
-    const newValue = newCode.value.trim();
-    const docValue = documentation.value.trim();
+    // Handle Analyze button click
+    analyzeBtn.addEventListener("click", function () {
 
-    // Check whether all inputs are filled
-    if (oldValue === "" || newValue === "" || docValue === "") {
+        // Read and clean user inputs
+        const oldValue = oldCode.value.trim();
+        const newValue = newCode.value.trim();
+        const docValue = documentation.value.trim();
 
-        resultContent.textContent =
-            "Please fill in all three input boxes before analysis.";
+        // Check previous code
+        if (!oldValue) {
+            showMessage(
+                "Please enter your previous code.",
+                "error"
+            );
+            oldCode.focus();
+            return;
+        }
 
-        return;
+        // Check updated code
+        if (!newValue) {
+            showMessage(
+                "Please enter your updated code.",
+                "error"
+            );
+            newCode.focus();
+            return;
+        }
+
+        // Check documentation
+        if (!docValue) {
+            showMessage(
+                "Please enter your project documentation.",
+                "error"
+            );
+            documentation.focus();
+            return;
+        }
+
+        // All inputs are valid
+        showMessage(
+            "All inputs received successfully! Your frontend is ready for backend integration.",
+            "success"
+        );
+
+    });
+
+    // Display messages safely
+    function showMessage(message, type) {
+        resultContent.textContent = message;
+        resultContent.className = type;
     }
 
-    // Show a temporary success message
-    resultContent.textContent =
-        "All inputs received! Ready to analyze documentation.";
-
-});
+}
