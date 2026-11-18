@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DocGuard - Documentation Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Main heading -->
+    <header>
+        <h1>DocGuard</h1>
+        <p>Documentation Drift Detection Tool</p>
+    </header>
+
+    <!-- Main dashboard -->
+    <main>
+
+        <!-- Old Code Input -->
+        <section>
+            <h2>1. Previous Code</h2>
+            <p>Paste your original code below.</p>
+
+            <textarea
+                id="oldCode"
+                placeholder="Paste your old code here..."
+                rows="8">
+            </textarea>
+        </section>
+
+        <!-- Updated Code Input -->
+        <section>
+            <h2>2. Updated Code</h2>
+            <p>Paste your modified code below.</p>
+
+            <textarea
+                id="newCode"
+                placeholder="Paste your updated code here..."
+                rows="8">
+            </textarea>
+        </section>
+
+        <!-- Documentation Input -->
+        <section>
+            <h2>3. Project Documentation</h2>
+            <p>Paste your README documentation below.</p>
+
+            <textarea
+                id="documentation"
+                placeholder="Paste your README content here..."
+                rows="8">
+            </textarea>
+        </section>
+
+        <!-- Analyze Button -->
+        <button id="analyzeBtn" type="button">
+            Analyze Documentation
+        </button>
+
+        <!-- Results Section -->
+        <section id="results">
+            <h2>Analysis Results</h2>
+            <div id="resultContent">
+                Your analysis results will appear here.
+            </div>
+        </section>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
